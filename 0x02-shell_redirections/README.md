@@ -1,1 +1,2 @@
-0x02 Shell Input Output redirection and filters
+#!/bin/bash
+cat /etc/passwd /etc/hosts
