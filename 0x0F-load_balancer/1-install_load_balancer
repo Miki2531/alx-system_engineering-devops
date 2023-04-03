@@ -1,11 +1,30 @@
 #!/usr/bin/env bash
-# Install the load balancer
+# Install and configure HAproxy
 
+# Update Packages
+apt-get -y update
+apt-get -y upgrade
 
-sudo apt-get -y update
-sudo apt-get -y upgrade
-sudo apt-get -y install haproxy
-sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
-sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
-sudo sed -i "$ a\listen 540-lb-01\n\tbind *:80\n\tmode http\n\tbalance roundrobin\n\toption httpclose\n\toption forwardfor\n\tserver 540-web-02 3.234.218.189:80 check\n\tserver 540-web-01 35.196.96.41:80 check" /etc/haproxy/haproxy.cfg
-sudo service haproxy start
+# Add Haproxy PPA
+apt-get install --no-install-recommends software-properties-common
+add-apt-repository ppa:vbernat/haproxy-2.5
+app-get -y update
+
+# Install Haproxy
+apt-get -y install haproxy=2.5.\*
+
+# Configure Haproxy
+config="\
+frontend balancer
+    bind *:80
+    mode http
+    default_backend lb-backends
+backend lb-backends
+    balance roundrobin
+    server 64803-web-01 3.94.185.100 check
+    server 64803-web-02 54.236.47.222 check
+"
+cp -a /etc/haproxy/haproxy.cfg{,.orig}
+sudo echo $config >> /etc/haproxy/haproxy.cfg
+
+sudo service haproxy restart
