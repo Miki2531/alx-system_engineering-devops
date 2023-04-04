@@ -24,7 +24,7 @@ printf %s "server {
         return 301 http://cuberule.com/;
     }
     error_page 404 /404.html;
-    location /404 {
+    location = /404.html {
       root /etc/nginx/html;
       internal;
     }
