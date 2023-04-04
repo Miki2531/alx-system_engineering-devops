@@ -1,30 +1,35 @@
 #!/usr/bin/env bash
-# Install nginx on web server; Nginx should be listening on port 80
-# redirects to another page
-# Have a custom 404 page
-
+# Installs, configures, and starts the server
 apt-get update
-apt-get install -y nginx
-
-mkdir /etc/nginx/html
-touch /etc/nginx/html/index.html
-echo "Holberton School" > /etc/nginx/html/index.html
-touch /etc/nginx/html/404.html
-echo "Ceci n'est pas une page" > /etc/nginx/html/404.html
-
-printf %s "server {
-    listen 80;
-    listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index  index.html index.htm;
-    location /redirect_me {
-        return 301 http://cuberule.com/;
-    }
-    error_page 404 /404.html;
-    location /404 {
-      root /etc/nginx/html;
-      internal;
-    }
-}" > /etc/nginx/sites-available/default
-
-service nginx restart
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+mkdir -p /var/www/html /var/www/error
+chmod -R 755 /var/www
+echo 'Hello World!' > /var/www/html/index.html
+echo -e "Ceci n\x27est pas une page" > /var/www/error/404.html
+# the server's configuration
+SERVER_CONFIG=\
+"server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+	location / {
+		try_files \$uri \$uri/ =404;
+	}
+	if (\$request_filename ~ redirect_me){
+		rewrite ^ https://sketchfab.com/bluepeno/models permanent;
+	}
+	error_page 404 /404.html;
+	location = /404.html {
+		root /var/www/error/;
+		internal;
+	}
+}"
+bash -c "echo -e '$SERVER_CONFIG' > /etc/nginx/sites-enabled/default"
+if [ "$(pgrep -c nginx)" -le 0 ]; then
+	service nginx start
+else
+	service nginx restart
+fi
