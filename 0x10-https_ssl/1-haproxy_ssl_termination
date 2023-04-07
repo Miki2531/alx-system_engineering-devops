@@ -34,19 +34,19 @@ defaults
 	errorfile 504 /etc/haproxy/errors/504.http
 
 # start of parameters for aysuarex.tech
-frontend aysuarex.tech-http-frontend
+frontend studentair.tech-http-frontend
 	bind	 *:80
 	http-request set-header X-Forwarded-Proto http
-	default_backend	 aysuarex.tech-backend
+	default_backend	 studentair.tech-backend
 
 
-frontend  aysuarex.tech-https-frontend
+frontend  studentair.tech-https-frontend
 	bind *:443 ssl crt /etc/ssl/studentair.tech.pem
 	http-request set-header X-Forwarded-Proto https
         default_backend studentair.tech-backend
 
 
-backend aysuarex.tech-backend
+backend studentair.tech-backend
         balance roundrobin
         server 64803-web-01 54.160.102.194:80 check
         server 64803-web-02 54.236.47.222:80 check
