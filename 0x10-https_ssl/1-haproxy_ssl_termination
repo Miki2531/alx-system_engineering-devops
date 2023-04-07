@@ -43,7 +43,7 @@ frontend aysuarex.tech-http-frontend
 frontend  aysuarex.tech-https-frontend
 	bind *:443 ssl crt /etc/ssl/studentair.tech.pem
 	http-request set-header X-Forwarded-Proto https
-        default_backend aysuarex.tech-backend
+        default_backend studentair.tech-backend
 
 
 backend aysuarex.tech-backend
