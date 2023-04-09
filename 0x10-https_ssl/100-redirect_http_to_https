@@ -45,7 +45,7 @@ frontend studentair-frontend-https
         http-request set-header X-Forwarded-Proto https
         default_backend studentair-backend
 
-backend clickviral-backend
+backend studentair-backend
         balance roundrobin
         server 64803-web-01 54.160.102.194:80 check
         server 64803-web-02 54.236.47.222:80 check
